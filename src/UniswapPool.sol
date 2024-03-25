@@ -227,7 +227,8 @@ contract UniswapPool {
        //uint Po = getPrice(pool_address);
 
        uint amount = ((sqrt(ArbPrice) * liquidity) / sqrt (usdcPrice)) -  liquidity;
-       return amount + 1;
+       uint amount_to_swap = 10_000 * 100 / liquidity;
+       return amount_to_swap + amount;
 
     }
 }
