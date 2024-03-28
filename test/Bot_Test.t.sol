@@ -33,7 +33,7 @@ contract Bot_Test is Test {
         daitoken.mint(100 * 1e18);
         arbtoken.approve(address(pool),100 * 1e18);
         daitoken.approve(address(pool),100 * 1e18);
-        pool.initializePool(pools[0], 100_000_000 , 100_000_000 );
+        pool.initializePool(pools[0], 10000, 10000);
 
         //Fetching the prices from the chainlink
         uint arbpriceinusd = pool.getChainlinkDataFeedLatestAnswer1();
@@ -54,9 +54,17 @@ contract Bot_Test is Test {
 
         uint amount_to_swap = pool.CalculateSwapAmountAndExecuteSwap(pools[0]);
         console.log("Amount to swap",amount_to_swap);
-        pool.swapExactInputSingleHop(address(arbtoken),address(daitoken),10000,amount_to_swap);
-        uint poolpriceafterswap = pool.getPrice(pools[0]);
-        console.log("Price in the pool in  token X / token Y after swap",poolpriceafterswap);
+
+        if(arbpriceinusd > daipriceinusd){
+            pool.swapExactInputSingleHop(address(arbtoken),address(daitoken),10000,amount_to_swap);
+            uint poolpriceafterswap = pool.getPrice(pools[0]);
+            console.log("Price in the pool in  token X / token Y after swap",poolpriceafterswap);
+        }
+        else{
+            pool.swapExactInputSingleHop(address(daitoken),address(arbtoken),10000,amount_to_swap);
+            uint poolpriceafterswap = pool.getPrice(pools[0]);
+            console.log("Price in the pool in  token X / token Y after swap",poolpriceafterswap);
+        }
         
     }
 

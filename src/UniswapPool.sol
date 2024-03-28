@@ -221,14 +221,19 @@ contract UniswapPool {
 
     //function To calculate the amount of tokens we have to transfer In.
     function CalculateSwapAmountAndExecuteSwap(address pool_address) public returns (uint){
-       uint ArbPrice =  getChainlinkDataFeedLatestAnswer1();
-       uint usdcPrice = getChainlinkDataFeedLatestAnswer2();
-       uint liquidity = getLiquidity(pool_address);
-       //uint Po = getPrice(pool_address);
-
-       uint amount = ((sqrt(ArbPrice) * liquidity) / sqrt (usdcPrice)) -  liquidity;
-       uint amount_to_swap = 10_000 * 100 / liquidity;
-       return amount_to_swap + amount;
+        uint ArbPrice =  getChainlinkDataFeedLatestAnswer1();
+        uint usdcPrice = getChainlinkDataFeedLatestAnswer2();
+        uint liquidity = getLiquidity(pool_address);
+        if(ArbPrice > usdcPrice){
+            uint amount = ((sqrt(ArbPrice) * liquidity) / sqrt (usdcPrice)) -  liquidity;
+            uint amount_to_swap = 10_000 * 100 / liquidity;
+            return amount_to_swap + amount;
+        }
+        else{
+            uint amount_to_swap = sqrt(usdcPrice) * liquidity /sqrt(ArbPrice) -liquidity;
+            console.log("Amount of Dai to Swap is ",amount_to_swap);
+            return amount_to_swap;
+        }
 
     }
 }
